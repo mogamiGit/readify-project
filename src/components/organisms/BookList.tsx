@@ -3,12 +3,14 @@ import { getBooks } from '../../api/open-library';
 import type { BookType } from '../../types/open-library';
 import Book from '../molecules/Book';
 import { COVER_IMAGE_URL, IMAGE_EXTENSION } from '../../api/endpoints';
+import ContentWrapper from '../atoms/ContentWrapper';
 
 interface Props {
       query: string;
+      filterType: 'q' | 'author' | 'title'
 }
 
-const Booklist: React.FC<Props> = ({ query }) => {
+const Booklist: React.FC<Props> = ({ query, filterType }) => {
       const [books, setBooks] = useState<BookType[]>([]);
       const [loading, setLoading] = useState<boolean>(true);
       const [error, setError] = useState<string | null>(null);
@@ -22,7 +24,9 @@ const Booklist: React.FC<Props> = ({ query }) => {
             async function loadBooks() {
                   try {
                         setLoading(true)
-                        const data = await getBooks(query, 1);
+                        setError(null)
+                        const data = await getBooks(query, 1, filterType);
+
                         setBooks(data.docs.slice(0, 12))
                   } catch (err) {
                         setError((err as Error).message)
@@ -32,18 +36,28 @@ const Booklist: React.FC<Props> = ({ query }) => {
             }
 
             loadBooks();
-      }, [query])
+      }, [query, filterType])
 
-      if (loading) return <p>Cargando Libros...</p>
-      if (error) return <p>Error: {error}</p>
-      if (books.length === 0) return <p>No se encontraron libros.</p>
+      if (loading || error || books.length === 0) {
+            let message = '';
+
+            if (loading) message = 'Cargando Libros...';
+            else if (error) message = `Error: ${error}`;
+            else if (books.length === 0) message = 'No se encontraron libros.';
+
+            return (
+                  <div className='h-[calc(100vh-80px)] w-screen flex justify-center items-center'>
+                        <p className='text-lg'>{message}</p>
+                  </div>
+            );
+      }
 
       return (
-            <div>
-                  <div className='grid grid-cols-4 gap-x-4 gap-y-10 items-start'>
+            <ContentWrapper>
+                  <div className='grid grid-cols-4 gap-x-4 gap-y-10 items-start my-12'>
                         {books.map((book) => {
                               const olid = book.cover_i || '';
-                              const urlImage = olid ? `${COVER_IMAGE_URL}${olid}-M${IMAGE_EXTENSION}` : '';
+                              const urlImage = olid ? `${COVER_IMAGE_URL}${olid}-L${IMAGE_EXTENSION}` : '';
 
                               return (
                                     <Book
@@ -54,7 +68,7 @@ const Booklist: React.FC<Props> = ({ query }) => {
                               );
                         })}
                   </div>
-            </div>
+            </ContentWrapper>
       );
 }
 
