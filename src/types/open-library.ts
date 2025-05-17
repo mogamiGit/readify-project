@@ -1,4 +1,4 @@
-export interface GeneralResponse {
+export interface GeneralResponseType {
       numFound: number;
       start: number;
       numFoundExact: boolean;
@@ -6,10 +6,10 @@ export interface GeneralResponse {
       documentation_url: string;
       q: string;
       offset: number | null;
-      docs: Book[];
+      docs: BookType[];
   }
 
-  export interface Book {
+  export interface BookType {
       author_key?: string[];
       author_name?: string[];
       cover_edition_key?: string;
