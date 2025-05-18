@@ -4,6 +4,7 @@ import type { BookType } from '../../types/open-library';
 import Book from '../molecules/Book';
 import { COVER_IMAGE_URL, IMAGE_EXTENSION } from '../../api/endpoints';
 import ContentWrapper from '../atoms/ContentWrapper';
+import SkeletonBook from '../atoms/SkeletonBook';
 
 interface Props {
       query: string;
@@ -16,7 +17,7 @@ const Booklist: React.FC<Props> = ({ query, filterType }) => {
       const [error, setError] = useState<string | null>(null);
 
       useEffect(() => {
-            if (!query) {
+            if (!query.trim()) {
                   setBooks([])
                   return;
             }
@@ -25,8 +26,8 @@ const Booklist: React.FC<Props> = ({ query, filterType }) => {
                   try {
                         setLoading(true)
                         setError(null)
-                        const data = await getBooks(query, 1, filterType);
 
+                        const data = await getBooks(query, 1, filterType);
                         setBooks(data.docs.slice(0, 12))
                   } catch (err) {
                         setError((err as Error).message)
@@ -46,8 +47,17 @@ const Booklist: React.FC<Props> = ({ query, filterType }) => {
             else if (books.length === 0) message = 'No se encontraron libros.';
 
             return (
-                  <div className='h-[calc(100vh-80px)] w-screen flex justify-center items-center'>
-                        <p className='text-lg'>{message}</p>
+                  <div className='relative h-[calc(100vh-80px)] w-screen flex justify-center items-center overflow-hidden'>
+                        <ContentWrapper className="pt-[300px]">
+                              <div className='grid grid-cols-4 gap-x-4 gap-y-10 items-start'>
+                                    {Array.from({ length: 12 }).map((_, i) => <SkeletonBook key={i} />)}
+                              </div>
+                        </ContentWrapper>
+                        <div className='absolute inset-0 w-screen h-screen bg-black/10 p-4 flex items-center justify-center'>
+                              <div className='rounded-full px-10 py-6 bg-white shadow-3xl'>
+                                    <p className='text-lg'>{message}</p>
+                              </div>
+                        </div>
                   </div>
             );
       }

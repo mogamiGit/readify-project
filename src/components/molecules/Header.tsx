@@ -10,13 +10,13 @@ interface Props {
 }
 
 const Header: React.FC<Props> = ({
-      initialValue = '',
+      initialValue = ' ',
       searchValue,
       filterType,
       setFilterType,
 }) => {
       return (
-            <div className='sticky top-0 w-full p-4 bg-amber-50 border-b-amber-100'>
+            <div className='sticky top-0 w-full p-4 bg-amber-50 border-b-amber-100 z-10'>
                   <ContentWrapper>
                         <div className='flex gap-8 items-center justify-center'>
                               <SearchBar initialValue={initialValue} searchValue={searchValue} />

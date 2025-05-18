@@ -9,7 +9,7 @@ export default function App() {
 
   return (
     <div className='w-screen min-h-screen'>
-      <Header initialValue='' searchValue={setQuery} filterType={type} setFilterType={setType} />
+      <Header searchValue={setQuery} filterType={type} setFilterType={setType} />
       <Booklist query={query} filterType={type} />
     </div>
   )
