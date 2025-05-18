@@ -5,13 +5,15 @@ import Book from '../molecules/Book';
 import { COVER_IMAGE_URL, IMAGE_EXTENSION } from '../../api/endpoints';
 import ContentWrapper from '../atoms/ContentWrapper';
 import SkeletonBook from '../atoms/SkeletonBook';
+import type { LanguageCode } from '../../types/languages';
 
 interface Props {
       query: string;
-      filterType: 'q' | 'author' | 'title'
+      filterType: 'q' | 'author' | 'title';
+      filterLanguage: LanguageCode;
 }
 
-const Booklist: React.FC<Props> = ({ query, filterType }) => {
+const Booklist: React.FC<Props> = ({ query, filterType, filterLanguage }) => {
       const [books, setBooks] = useState<BookType[]>([]);
       const [loading, setLoading] = useState<boolean>(true);
       const [error, setError] = useState<string | null>(null);
@@ -27,7 +29,7 @@ const Booklist: React.FC<Props> = ({ query, filterType }) => {
                         setLoading(true)
                         setError(null)
 
-                        const data = await getBooks(query, 1, filterType);
+                        const data = await getBooks(query, 1, filterType, filterLanguage);
                         setBooks(data.docs.slice(0, 12))
                   } catch (err) {
                         setError((err as Error).message)
@@ -37,7 +39,7 @@ const Booklist: React.FC<Props> = ({ query, filterType }) => {
             }
 
             loadBooks();
-      }, [query, filterType])
+      }, [query, filterType, filterLanguage])
 
       if (loading || error || books.length === 0) {
             let message = '';
