@@ -47,7 +47,7 @@ const Booklist: React.FC<Props> = ({ query, filterType }) => {
             else if (books.length === 0) message = '😢 No se encontraron libros.';
 
             return (
-                  <div className='relative h-[calc(100vh-80px)] w-screen flex justify-center items-center overflow-hidden'>
+                  <div className='relative h-[calc(100vh-80px)] w-screen flex justify-center items-center overflow-y-hidden'>
                         {loading && (
                               <ContentWrapper className="pt-[300px]">
                                     <div className='grid grid-cols-4 gap-x-4 gap-y-10 items-start'>
