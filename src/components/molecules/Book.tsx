@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { formatTextToPlaceholder } from '../../utils/stringUtils';
 
 interface Props {
@@ -9,15 +9,21 @@ interface Props {
 }
 
 const Book: React.FC<Props> = ({ title, authors, urlImage, altImage = `Cover de ${title}` }) => {
+      const [imageLoaded, setImageLoaded] = useState(false);
       const placeholder = `https://placehold.co/350x525/f4f4f4/gray?text=${formatTextToPlaceholder(title)}?font=roboto`
 
       return (
             <div className='flex flex-col gap-5 justify-center items-center'>
-                  <img
-                        src={urlImage || placeholder}
-                        alt={altImage}
-                        className='w-auto h-[300px]'
-                  />
+                  <div className={`flex justify-center rounded-sm overflow-hidden ${imageLoaded ? 'w-auto h-auto' : 'w-[200px] h-[300px] bg-gray-200'}`}>
+                        {urlImage && (
+                              <img
+                                    src={urlImage || placeholder}
+                                    alt={altImage}
+                                    onLoad={() => setImageLoaded(true)}
+                                    className='w-auto h-[300px]'
+                              />
+                        )}
+                  </div>
                   <div className='flex flex-col gap-1 justify-center'>
                         <p className='font-bold text-xl'>{title}</p>
                         <div className='flex gap-2 justify-center flex-wrap'>

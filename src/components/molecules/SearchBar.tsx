@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Button from '../atoms/Button';
 
 interface Props {
       initialValue?: string;
@@ -16,15 +17,15 @@ const SearchBar: React.FC<Props> = ({ initialValue = '', searchValue }) => {
       }
 
       return (
-            <form onSubmit={handleSearch} className='bg-white max-w-[30rem] flex justify-between'>
+            <form onSubmit={handleSearch} className='bg-white max-w-[30rem] flex justify-between items-center rounded-full'>
                   <input
                         type="text"
                         placeholder='Buscar un libro o autor'
                         value={inputValue}
                         onChange={(e) => setInputValue(e.target.value)}
-                        className='w-full p-3'
+                        className='w-full py-3 px-5'
                   />
-                  <button type='submit' className='bg-amber-900'>Buscar</button>
+                  <Button type='submit' text='Buscar' />
             </form>
       );
 }

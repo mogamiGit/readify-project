@@ -10,7 +10,7 @@ interface Props {
 }
 
 const Header: React.FC<Props> = ({
-      initialValue = ' ',
+      initialValue = '',
       searchValue,
       filterType,
       setFilterType,
