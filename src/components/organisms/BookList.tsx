@@ -6,6 +6,7 @@ import { COVER_IMAGE_URL, IMAGE_EXTENSION } from '../../api/endpoints';
 import ContentWrapper from '../atoms/ContentWrapper';
 import SkeletonBook from '../atoms/SkeletonBook';
 import type { LanguageCode } from '../../types/languages';
+import ControlPageButtons from '../molecules/ControlPageButtons';
 
 interface Props {
       query: string;
@@ -18,6 +19,9 @@ const Booklist: React.FC<Props> = ({ query, filterType, filterLanguage }) => {
       const [loading, setLoading] = useState<boolean>(true);
       const [error, setError] = useState<string | null>(null);
 
+      const [page, setPage] = useState<number>(1);
+      const [totalPages, setTotalPages] = useState<number>(1);
+
       useEffect(() => {
             if (!query.trim()) {
                   setBooks([])
@@ -29,8 +33,10 @@ const Booklist: React.FC<Props> = ({ query, filterType, filterLanguage }) => {
                         setLoading(true)
                         setError(null)
 
-                        const data = await getBooks(query, 1, filterType, filterLanguage);
-                        setBooks(data.docs.slice(0, 12))
+                        const data = await getBooks(query, page, filterType, filterLanguage, 12);
+
+                        setBooks(data.docs)
+                        setTotalPages(Math.ceil(data.numFound / 12)) // En base a 12
                   } catch (err) {
                         setError((err as Error).message)
                   } finally {
@@ -39,8 +45,9 @@ const Booklist: React.FC<Props> = ({ query, filterType, filterLanguage }) => {
             }
 
             loadBooks();
-      }, [query, filterType, filterLanguage])
+      }, [query, filterType, filterLanguage, page])
 
+      // STATES
       if (loading || error || books.length === 0) {
             let message = '';
 
@@ -82,6 +89,12 @@ const Booklist: React.FC<Props> = ({ query, filterType, filterLanguage }) => {
                               );
                         })}
                   </div>
+
+                  <ControlPageButtons
+                        page={page}
+                        totalPages={totalPages}
+                        onPageChange={setPage}
+                  />
             </ContentWrapper>
       );
 }

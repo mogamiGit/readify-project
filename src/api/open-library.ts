@@ -7,10 +7,12 @@ export async function getBooks(
       page: number = 1,
       filterType: 'q' | 'author' | 'title' =  'q',
       language?: LanguageCode,
+      limit: number = 12,
 ): Promise<GeneralResponseType> {
       const url = new URL(OPEN_LIBRARY_SEARCH_URL)
       url.searchParams.append(filterType, query)
       url.searchParams.append('page', page.toString())
+      url.searchParams.append('limit', limit.toString())
 
       if (language) {
             url.searchParams.append('language', language)

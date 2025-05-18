@@ -14,7 +14,7 @@ const Book: React.FC<Props> = ({ title, authors, urlImage, altImage = `Cover de 
 
       return (
             <div className='flex flex-col gap-5 justify-center items-center'>
-                  <div className={`flex justify-center rounded-sm overflow-hidden ${imageLoaded ? 'w-auto h-auto' : 'w-[200px] h-[300px] bg-gray-200'}`}>
+                  <div className={`flex justify-center rounded overflow-hidden ${imageLoaded ? 'w-auto h-auto' : 'w-[200px] h-[300px] bg-gray-200'}`}>
                         {urlImage && (
                               <img
                                     src={urlImage || placeholder}

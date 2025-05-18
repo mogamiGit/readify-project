@@ -17,7 +17,7 @@ const SearchBar: React.FC<Props> = ({ initialValue = '', searchValue }) => {
       }
 
       return (
-            <form onSubmit={handleSearch} className='bg-white max-w-[30rem] flex justify-between items-center rounded-full overflow-hidden'>
+            <form onSubmit={handleSearch} className='bg-white max-w-[30rem] flex justify-between items-center border rounded-full overflow-hidden'>
                   <input
                         type="text"
                         placeholder='Buscar un libro o autor'

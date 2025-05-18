@@ -12,7 +12,7 @@ interface Props {
 const Button: React.FC<Props> = ({ type = "button", text, link, icon, disabled = false, className }) => {
       const containerClass = `max-w-[200px] min-h-14 w-auto gap-3 font-medium text-base px-5 py-2 text-center inline-flex items-center justify-center rounded hover:outline-none text-white ${className} ${disabled
             ? "bg-gray-400 text-white cursor-not-allowed"
-            : "bg-black text-white hover:bg-black/80"}`
+            : "bg-gray-600 text-white hover:bg-black/80"}`
 
       const handleClick = () => {
             if (disabled) return;
