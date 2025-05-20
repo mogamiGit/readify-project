@@ -7,7 +7,7 @@ interface Props {
 
 const ContentWrapper: React.FC<Props> = ({ children, className }) => {
       return (
-            <div className={`w-full mx-auto max-w-screen-xl px-4 ${className}`}>
+            <div className={`w-full mx-auto max-w-screen-xl px-6 ${className}`}>
                   {children}
             </div>
       );

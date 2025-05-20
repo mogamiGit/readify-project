@@ -32,12 +32,15 @@ const Booklist: React.FC<Props> = ({ query, filterType, filterLanguage }) => {
                   try {
                         setLoading(true)
                         setError(null)
+                        console.log('Iniciando búsqueda con:', { query, page, filterType, filterLanguage });
 
                         const data = await getBooks(query, page, filterType, filterLanguage, 12);
+                        console.log('Respuesta de la API:', data);
 
                         setBooks(data.docs)
                         setTotalPages(Math.ceil(data.numFound / 12)) // En base a 12
                   } catch (err) {
+                        console.error('Error completo:', err);
                         setError((err as Error).message)
                   } finally {
                         setLoading(false)
@@ -64,7 +67,7 @@ const Booklist: React.FC<Props> = ({ query, filterType, filterLanguage }) => {
                                     </div>
                               </ContentWrapper>
                         )}
-                        <div className='absolute inset-0 w-screen h-screen bg-black/10 p-4 flex items-center justify-center'>
+                        <div className='absolute inset-0 w-screen h-screen bg-gradient-to-r from-peach to-blueLight p-4 flex items-center justify-center'>
                               <div className='rounded-full px-10 py-6 bg-white shadow-3xl'>
                                     <p className={`text-lg ${loading ? 'animate-pulse' : ''} `}>{message}</p>
                               </div>
@@ -79,12 +82,14 @@ const Booklist: React.FC<Props> = ({ query, filterType, filterLanguage }) => {
                         {books.map((book) => {
                               const olid = book.cover_i || '';
                               const urlImage = olid ? `${COVER_IMAGE_URL}${olid}-L${IMAGE_EXTENSION}` : '';
+                              const workId = book.key?.split('/').pop();
 
                               return (
                                     <Book
                                           title={book.title}
                                           authors={book.author_name ?? []}
                                           urlImage={urlImage}
+                                          workId={workId}
                                     />
                               );
                         })}

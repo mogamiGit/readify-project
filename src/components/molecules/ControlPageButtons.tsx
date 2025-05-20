@@ -10,7 +10,7 @@ const ControlPageButtons: React.FC<Props> = ({ page, totalPages, onPageChange })
       const buttonClass = 'px-6 py-4 border rounded-full bg-gray-300 border border-gray-400 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-300/50 disabled:hover:bg-gray-300 disabled:border-0'
 
       return (
-            <div className="flex items-center justify-center gap-6 mb-12">
+            <div className="flex items-center justify-center gap-6 pb-12">
                   <button
                         className={buttonClass}
                         disabled={page === 1}

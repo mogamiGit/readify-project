@@ -20,7 +20,7 @@ const SearchBar: React.FC<Props> = ({ initialValue = '', searchValue }) => {
             <form onSubmit={handleSearch} className='bg-white max-w-[30rem] flex justify-between items-center border rounded-full overflow-hidden'>
                   <input
                         type="text"
-                        placeholder='Buscar un libro o autor'
+                        placeholder='Buscar un libro'
                         value={inputValue}
                         onChange={(e) => setInputValue(e.target.value)}
                         className='w-full py-3 px-5 rounded-l-full'

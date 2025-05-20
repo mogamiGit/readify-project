@@ -20,8 +20,10 @@ const Header: React.FC<Props> = ({
       filterLanguage,
       setFilterLanguageType,
 }) => {
+      const headerClass = 'sticky top-0 w-full p-4 bg-gradient-to-r from-blueLight to-peach border-2 border-b-blueLight z-10 backdrop-blur-lg'
+
       return (
-            <div className='sticky top-0 w-full p-4 bg-amber-50 border-b-amber-100 z-10'>
+            <div className={headerClass}>
                   <ContentWrapper>
                         <div className='flex gap-8 items-center justify-between'>
                               <SearchBar initialValue={initialValue} searchValue={searchValue} />
