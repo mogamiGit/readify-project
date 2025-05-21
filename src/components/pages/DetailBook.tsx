@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import ContentWrapper from '../atoms/ContentWrapper';
 import { getBookDetail } from '../../api/open-library';
 import type { BookDetailsApi } from '../../types/book';
+import { getCoverUrl } from '../../utils/imageUtils';
 
 const DetailBook: React.FC = () => {
       const { workId } = useParams<{ workId: string }>();
@@ -19,6 +20,7 @@ const DetailBook: React.FC = () => {
             getBookDetail(workId)
                   .then((book) => {
                         if (!cancelled) {
+                              console.log('Book data:', book);
                               setBook(book);
                               setError(null);
                         }
@@ -54,9 +56,7 @@ const DetailBook: React.FC = () => {
 
       if (!book) return null;
 
-      const coverUrl = book.covers?.[0]
-            ? `https://covers.openlibrary.org/b/id/${book.covers[0]}-L.jpg`
-            : '';
+      const coverUrl = getCoverUrl(book.covers?.[0]);
 
       return (
             <div className='w-full h-[calc(100vh-80px)] flex items-center'>
@@ -93,7 +93,7 @@ const DetailBook: React.FC = () => {
                                           <img
                                                 src={coverUrl}
                                                 alt={`Portada de ${book.title}`}
-                                                className='w-[350px] h-[500px] object-cover rounded-xl shadow-lg'
+                                                className='w-[350px] h-[500px] object-cover rounded-xl bg-blueDark/20'
                                           />
                                     ) : (
                                           <div className='w-[400px] h-[600px] bg-gray-400 rounded-xl flex items-center justify-center'>

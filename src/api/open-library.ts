@@ -35,5 +35,25 @@ export const getBookDetail = async (workId: string): Promise<BookDetailsApi> => 
   if (!res.ok) {
     throw new Error('Error al cargar el libro');
   }
-  return res.json();
+  const data = await res.json();
+  
+  if (data.authors && data.authors.length > 0) {
+    const authorPromises = data.authors.map(async (author: { author: { key: string } }) => {
+      const authorRes = await fetch(`https://openlibrary.org${author.author.key}.json`);
+      if (!authorRes.ok) {
+        throw new Error('Error al cargar los detalles del autor');
+      }
+      const authorData = await authorRes.json();
+      return {
+        author: {
+          key: author.author.key,
+          name: authorData.name
+        }
+      };
+    });
+    
+    data.authors = await Promise.all(authorPromises);
+  }
+  
+  return data;
 };

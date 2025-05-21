@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { formatTextToPlaceholder } from '../../utils/stringUtils';
 import { Link } from 'react-router-dom';
+import { getPlaceholderUrl } from '../../utils/imageUtils';
 
 interface Props {
       title: string;
@@ -12,20 +12,18 @@ interface Props {
 
 const Book: React.FC<Props> = ({ title, workId, authors, urlImage, altImage = `Cover de ${title}` }) => {
       const [imageLoaded, setImageLoaded] = useState(false);
-      const placeholder = `https://placehold.co/350x525/f4f4f4/gray?text=${formatTextToPlaceholder(title)}?font=roboto`
 
       return (
             <Link to={`/book/${workId}`} className="block">
                   <div className='flex flex-col gap-5 justify-center items-center'>
                         <div className={`flex justify-center rounded-lg overflow-hidden ${imageLoaded ? 'w-auto h-auto' : 'w-[200px] h-[300px] bg-blueDark/20'}`}>
-                              {urlImage && (
-                                    <img
-                                          src={urlImage || placeholder}
-                                          alt={altImage}
-                                          onLoad={() => setImageLoaded(true)}
-                                          className='w-auto h-[300px]'
-                                    />
-                              )}
+                              <img
+                                    src={urlImage || getPlaceholderUrl(title)}
+                                    alt={altImage}
+                                    onLoad={() => setImageLoaded(true)}
+                                    onError={() => setImageLoaded(false)}
+                                    className='w-auto h-[300px]'
+                              />
                         </div>
                         <div className='flex flex-col gap-2 justify-center'>
                               <p className='font-bold text-xl'>{title}</p>
