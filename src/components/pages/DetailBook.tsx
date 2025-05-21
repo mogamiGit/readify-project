@@ -1,43 +1,43 @@
 import { useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react'
 import ContentWrapper from '../atoms/ContentWrapper';
-
-interface BookDetails {
-      title: string;
-      description?: string;
-      first_publish_date?: string;
-      authors?: Array<{
-            author: {
-                  key: string;
-                  name: string;
-            }
-      }>;
-      covers?: number[];
-}
+import { getBookDetail } from '../../api/open-library';
+import type { BookDetailsApi } from '../../types/book';
 
 const DetailBook: React.FC = () => {
       const { workId } = useParams<{ workId: string }>();
-      const [book, setBook] = useState<BookDetails | null>(null);
+      const [book, setBook] = useState<BookDetailsApi | null>(null);
       const [loading, setLoading] = useState(true);
       const [error, setError] = useState<string | null>(null);
 
       useEffect(() => {
             if (!workId) return;
 
+            let cancelled = false;
             setLoading(true);
-            fetch(`https://openlibrary.org/works/${workId}.json`)
-                  .then(res => {
-                        if (!res.ok) throw new Error('Error al cargar el libro');
-                        return res.json();
+
+            getBookDetail(workId)
+                  .then((book) => {
+                        if (!cancelled) {
+                              setBook(book);
+                              setError(null);
+                        }
                   })
-                  .then(data => {
-                        setBook(data);
-                        setLoading(false);
+                  .catch((err) => {
+                        if (!cancelled) {
+                              setError(err.message);
+                              setBook(null);
+                        }
                   })
-                  .catch(err => {
-                        setError(err.message);
-                        setLoading(false);
+                  .finally(() => {
+                        if (!cancelled) {
+                              setLoading(false);
+                        }
                   });
+
+            return () => {
+                  cancelled = true;
+            };
       }, [workId]);
 
       if (loading) return (
@@ -59,7 +59,7 @@ const DetailBook: React.FC = () => {
             : '';
 
       return (
-            <div className='w-full h-screen flex items-center'>
+            <div className='w-full h-[calc(100vh-80px)] flex items-center'>
                   <ContentWrapper className='bg-white/30 backdrop-blur-sm rounded-xl'>
                         <div className='w-full h-full grid grid-cols-2 items-center py-14'>
                               <div className='flex flex-col gap-4 items-start justify-start text-left p-4'>

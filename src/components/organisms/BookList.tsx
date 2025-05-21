@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import { getBooks } from '../../api/open-library';
-import type { BookType } from '../../types/open-library';
+import React, { useState } from 'react';
 import Book from '../molecules/Book';
-import { COVER_IMAGE_URL, IMAGE_EXTENSION } from '../../api/endpoints';
 import ContentWrapper from '../atoms/ContentWrapper';
 import SkeletonBook from '../atoms/SkeletonBook';
 import type { LanguageCode } from '../../types/languages';
 import ControlPageButtons from '../molecules/ControlPageButtons';
+import { PAGE_SIZE } from '../../constants/pagination';
+import { getCoverUrl } from '../../utils/imageUtils';
+import { useBooks } from '../../hooks/useBooks';
 
 interface Props {
       query: string;
@@ -15,40 +15,8 @@ interface Props {
 }
 
 const Booklist: React.FC<Props> = ({ query, filterType, filterLanguage }) => {
-      const [books, setBooks] = useState<BookType[]>([]);
-      const [loading, setLoading] = useState<boolean>(true);
-      const [error, setError] = useState<string | null>(null);
-
       const [page, setPage] = useState<number>(1);
-      const [totalPages, setTotalPages] = useState<number>(1);
-
-      useEffect(() => {
-            if (!query.trim()) {
-                  setBooks([])
-                  return;
-            }
-
-            async function loadBooks() {
-                  try {
-                        setLoading(true)
-                        setError(null)
-                        console.log('Iniciando búsqueda con:', { query, page, filterType, filterLanguage });
-
-                        const data = await getBooks(query, page, filterType, filterLanguage, 12);
-                        console.log('Respuesta de la API:', data);
-
-                        setBooks(data.docs)
-                        setTotalPages(Math.ceil(data.numFound / 12)) // En base a 12
-                  } catch (err) {
-                        console.error('Error completo:', err);
-                        setError((err as Error).message)
-                  } finally {
-                        setLoading(false)
-                  }
-            }
-
-            loadBooks();
-      }, [query, filterType, filterLanguage, page])
+      const { books, loading, error, totalPages } = useBooks({ query, page, filterType, filterLanguage });
 
       // STATES
       if (loading || error || books.length === 0) {
@@ -61,9 +29,11 @@ const Booklist: React.FC<Props> = ({ query, filterType, filterLanguage }) => {
             return (
                   <div className='relative h-[calc(100vh-80px)] w-screen flex justify-center items-center overflow-y-hidden'>
                         {loading && (
-                              <ContentWrapper className="pt-[300px]">
-                                    <div className='grid grid-cols-4 gap-x-4 gap-y-10 items-start'>
-                                          {Array.from({ length: 12 }).map((_, i) => <SkeletonBook key={i} />)}
+                              <ContentWrapper>
+                                    <div className='grid grid-cols-4 gap-x-4 gap-y-10 items-start pt-[550px]'>
+                                          {Array.from({ length: PAGE_SIZE }).map((_, i) =>
+                                                <SkeletonBook key={i}
+                                                />)}
                                     </div>
                               </ContentWrapper>
                         )}
@@ -81,7 +51,7 @@ const Booklist: React.FC<Props> = ({ query, filterType, filterLanguage }) => {
                   <div className='grid grid-cols-4 gap-x-4 gap-y-10 items-start my-12'>
                         {books.map((book) => {
                               const olid = book.cover_i || '';
-                              const urlImage = olid ? `${COVER_IMAGE_URL}${olid}-L${IMAGE_EXTENSION}` : '';
+                              const urlImage = olid ? getCoverUrl(olid) : '';
                               const workId = book.key?.split('/').pop();
 
                               return (

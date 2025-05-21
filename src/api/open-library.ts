@@ -1,6 +1,7 @@
 import type { GeneralResponseType } from "../types/open-library";
 import { OPEN_LIBRARY_SEARCH_URL } from "./endpoints";
 import type { LanguageCode } from '../types/languages';
+import type { BookDetailsApi } from '../types/book';
 
 export async function getBooks(
       query: string, 
@@ -27,3 +28,12 @@ export async function getBooks(
       const data: GeneralResponseType = await response.json()
       return data;
 }
+
+
+export const getBookDetail = async (workId: string): Promise<BookDetailsApi> => {
+  const res = await fetch(`https://openlibrary.org/works/${workId}.json`);
+  if (!res.ok) {
+    throw new Error('Error al cargar el libro');
+  }
+  return res.json();
+};
