@@ -7,6 +7,7 @@ import ControlPageButtons from '../molecules/ControlPageButtons';
 import { PAGE_SIZE } from '../../constants/pagination';
 import { getCoverUrl } from '../../utils/imageUtils';
 import { useBooks } from '../../hooks/useBooks';
+import Loading from './Loading';
 
 interface Props {
       query: string;
@@ -37,11 +38,7 @@ const Booklist: React.FC<Props> = ({ query, filterType, filterLanguage }) => {
                                     </div>
                               </ContentWrapper>
                         )}
-                        <div className='absolute inset-0 w-screen h-screen bg-gradient-to-r from-peach to-blueLight p-4 flex items-center justify-center'>
-                              <div className='rounded-full px-10 py-6 bg-white shadow-3xl'>
-                                    <p className={`text-lg ${loading ? 'animate-pulse' : ''} `}>{message}</p>
-                              </div>
-                        </div>
+                        <Loading loading={loading} message={message} />
                   </div>
             );
       }

@@ -7,7 +7,7 @@ interface Props {
 }
 
 const ControlPageButtons: React.FC<Props> = ({ page, totalPages, onPageChange }) => {
-      const buttonClass = 'px-6 py-4 border rounded-full bg-gray-300 border border-gray-400 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-300/50 disabled:hover:bg-gray-300 disabled:border-0'
+      const buttonClass = 'px-6 py-4 border rounded-full bg-gray-300 border-gray-400 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-300/50 disabled:hover:bg-gray-300 disabled:border-0 hover:scale-110 transition-transform disabled:hover:scale-100'
 
       return (
             <div className="flex items-center justify-center gap-6 pb-12">

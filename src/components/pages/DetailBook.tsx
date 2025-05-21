@@ -1,12 +1,14 @@
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react'
 import ContentWrapper from '../atoms/ContentWrapper';
 import { getBookDetail } from '../../api/open-library';
 import type { BookDetailsApi } from '../../types/book';
 import { getCoverUrl } from '../../utils/imageUtils';
+import Loading from '../organisms/Loading';
 
 const DetailBook: React.FC = () => {
       const { workId } = useParams<{ workId: string }>();
+      const navigate = useNavigate();
       const [book, setBook] = useState<BookDetailsApi | null>(null);
       const [loading, setLoading] = useState(true);
       const [error, setError] = useState<string | null>(null);
@@ -43,9 +45,7 @@ const DetailBook: React.FC = () => {
       }, [workId]);
 
       if (loading) return (
-            <div className='w-full h-screen flex items-center justify-center'>
-                  <p className='text-xl'>Cargando...</p>
-            </div>
+            <Loading loading={loading} message='Cargando Detalle...' />
       );
 
       if (error) return (
@@ -60,8 +60,14 @@ const DetailBook: React.FC = () => {
 
       return (
             <div className='w-full h-[calc(100vh-80px)] flex items-center'>
-                  <ContentWrapper className='bg-white/30 backdrop-blur-sm rounded-xl'>
+                  <ContentWrapper className='relative bg-white/30 backdrop-blur-sm rounded-xl'>
                         <div className='w-full h-full grid grid-cols-2 items-center py-14'>
+                              <button
+                                    onClick={() => navigate(-1)}
+                                    className='absolute left-0 top-0 m-4 py-3 px-6 rounded-full bg-gray-300 border border-gray-400 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-300/50 disabled:hover:bg-gray-300 disabled:border-0 hover:scale-110 transition-transform'
+                              >
+                                    ⬅️
+                              </button>
                               <div className='flex flex-col gap-4 items-start justify-start text-left p-4'>
                                     <div className='flex flex-col gap-2'>
                                           <p className='text-3xl font-bold'>{book.title}</p>
