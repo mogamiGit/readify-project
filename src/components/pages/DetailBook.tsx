@@ -3,8 +3,10 @@ import { useState, useEffect } from 'react'
 import ContentWrapper from '../atoms/ContentWrapper';
 import { getBookDetail } from '../../api/open-library';
 import type { BookDetailsApi } from '../../types/book';
-import { getCoverUrl } from '../../utils/imageUtils';
+import { getCoverUrl, getPlaceholderUrl } from '../../utils/imageUtils';
 import Loading from '../organisms/Loading';
+import { useLocalStorage } from 'usehooks-ts'
+import Button from '../atoms/Button';
 
 const DetailBook: React.FC = () => {
       const { workId } = useParams<{ workId: string }>();
@@ -12,6 +14,11 @@ const DetailBook: React.FC = () => {
       const [book, setBook] = useState<BookDetailsApi | null>(null);
       const [loading, setLoading] = useState(true);
       const [error, setError] = useState<string | null>(null);
+      const [isRead, setIsRead] = useLocalStorage<boolean>(`book-${workId}-read`, false);
+
+      const toggleReadStatus = () => {
+            setIsRead(!isRead);
+      };
 
       useEffect(() => {
             if (!workId) return;
@@ -59,16 +66,16 @@ const DetailBook: React.FC = () => {
       const coverUrl = getCoverUrl(book.covers?.[0]);
 
       return (
-            <div className='w-full h-[calc(100vh-80px)] flex items-center'>
-                  <ContentWrapper className='relative bg-white/30 backdrop-blur-sm rounded-xl'>
-                        <div className='w-full h-full grid grid-cols-2 items-center py-14'>
-                              <button
-                                    onClick={() => navigate(-1)}
-                                    className='absolute left-0 top-0 m-4 py-3 px-6 rounded-full bg-gray-300 border border-gray-400 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-300/50 disabled:hover:bg-gray-300 disabled:border-0 hover:scale-110 transition-transform'
-                              >
-                                    ⬅️
-                              </button>
-                              <div className='flex flex-col gap-4 items-start justify-start text-left p-4'>
+            <div className='w-full h-auto md:h-[calc(100vh-80px)] flex items-center md:px-8'>
+                  <ContentWrapper className='relative bg-white/30 backdrop-blur-sm md:rounded-xl h-full md:h-auto'>
+                        <button
+                              onClick={() => navigate(-1)}
+                              className='absolute left-0 top-0 m-4 py-3 px-6 rounded-full bg-gray-300 border border-gray-400 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-300/50 disabled:hover:bg-gray-300 disabled:border-0 hover:scale-110 transition-transform'
+                        >
+                              ⬅️
+                        </button>
+                        <div className='w-full h-full grid grid-cols-1 md:grid-cols-2 items-center py-14'>
+                              <div className='flex flex-col gap-4 items-start justify-start text-left p-4 order-2 md:order-1 mt-8 md:mt-0'>
                                     <div className='flex flex-col gap-2'>
                                           <p className='text-3xl font-bold'>{book.title}</p>
                                           {book.first_publish_date && (
@@ -88,24 +95,27 @@ const DetailBook: React.FC = () => {
                                           </div>
                                     )}
                                     {book.description && (
-                                          <div className='mt-4'>
+                                          <div className='mt-4 w-full'>
                                                 <p className='text-sm font-semibold mb-2'>Descripción:</p>
-                                                <p className='text-sm'>{book.description}</p>
+                                                <p className='text-sm text-balance'>{book.description}</p>
                                           </div>
                                     )}
+                                    <Button
+                                          text={isRead ? '✅ Leído' : '📚 No leído'}
+                                          style='dark'
+                                          onClick={toggleReadStatus}
+                                          className={`mt-2 ${isRead
+                                                ? 'bg-green-600/60 hover:bg-green-600/40'
+                                                : 'bg-gray-400 hover:bg-gray-600'
+                                                }`}
+                                    />
                               </div>
-                              <div className='flex justify-center'>
-                                    {coverUrl ? (
-                                          <img
-                                                src={coverUrl}
-                                                alt={`Portada de ${book.title}`}
-                                                className='w-[350px] h-[500px] object-cover rounded-xl bg-blueDark/20'
-                                          />
-                                    ) : (
-                                          <div className='w-[400px] h-[600px] bg-gray-400 rounded-xl flex items-center justify-center'>
-                                                <p className='text-gray-600'>Sin portada disponible</p>
-                                          </div>
-                                    )}
+                              <div className='flex justify-center order-1 md:order-2'>
+                                    <img
+                                          src={coverUrl || getPlaceholderUrl(book.title)}
+                                          alt={`Portada de ${book.title}`}
+                                          className='w-auto h-[500px] object-cover rounded-xl bg-blueDark/20'
+                                    />
                               </div>
                         </div>
                   </ContentWrapper>

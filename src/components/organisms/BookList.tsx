@@ -19,7 +19,8 @@ const Booklist: React.FC<Props> = ({ query, filterType, filterLanguage }) => {
       const [page, setPage] = useState<number>(1);
       const { books, loading, error, totalPages } = useBooks({ query, page, filterType, filterLanguage });
 
-      // STATES
+      const gridClass='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-x-4 gap-y-10 items-start'
+
       if (loading || error || books.length === 0) {
             let message = '';
 
@@ -31,7 +32,7 @@ const Booklist: React.FC<Props> = ({ query, filterType, filterLanguage }) => {
                   <div className='relative h-[calc(100vh-80px)] w-screen flex justify-center items-center overflow-y-hidden'>
                         {loading && (
                               <ContentWrapper>
-                                    <div className='grid grid-cols-4 gap-x-4 gap-y-10 items-start pt-[550px]'>
+                                    <div className={`${gridClass} pt-[300px]`}>
                                           {Array.from({ length: PAGE_SIZE }).map((_, i) =>
                                                 <SkeletonBook key={i}
                                                 />)}
@@ -45,7 +46,7 @@ const Booklist: React.FC<Props> = ({ query, filterType, filterLanguage }) => {
 
       return (
             <ContentWrapper>
-                  <div className='grid grid-cols-4 gap-x-4 gap-y-10 items-start my-12'>
+                  <div className={`${gridClass} my-12`}>
                         {books.map((book) => {
                               const olid = book.cover_i || '';
                               const urlImage = olid ? getCoverUrl(olid) : '';
