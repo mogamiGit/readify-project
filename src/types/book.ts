@@ -4,7 +4,7 @@ export interface AuthorApi {
     
 export interface BookDetailsApi {
       title: string;
-      description?: string;
+      description?: string | { type: string, value: string};
       first_publish_date?: string;
       authors?: AuthorApi[];
       covers?: number[];

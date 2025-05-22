@@ -2,13 +2,16 @@ import { useEffect, useState } from 'react';
 import { getBooks } from '../api/open-library';
 import type { BookType } from '../types/open-library';
 import { PAGE_SIZE } from '../constants/pagination';
-import type { LanguageCode } from '../types/languages';
+import type { FilterLanguageCodeType } from '../types/filters';
+import { useLocalStorage } from 'usehooks-ts';
+import type { FilterIsReadType } from '../types/filters';
 
 interface UseBooksParams {
   query: string;
   page: number;
   filterType: 'q' | 'author' | 'title';
-  filterLanguage: LanguageCode;
+  filterLanguage: FilterLanguageCodeType;
+  filterIsRead: FilterIsReadType;
 }
 
 export const useBooks = ({
@@ -16,11 +19,13 @@ export const useBooks = ({
   page,
   filterType,
   filterLanguage,
+  filterIsRead,
 }: UseBooksParams) => {
   const [books, setBooks] = useState<BookType[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [totalPages, setTotalPages] = useState(1);
+  const [readBooks] = useLocalStorage<string[]>('readBooks', []);
 
   useEffect(() => {
     if (!query.trim()) {
@@ -34,9 +39,18 @@ export const useBooks = ({
       try {
         setLoading(true);
         const data = await getBooks(query, page, filterType, filterLanguage, PAGE_SIZE);
+        let books = data.docs
+        
+        if(filterIsRead != "none")  {
+          books = books.filter((book) => {
+             const workId = book.key?.split('/').pop()
+             const isRead = workId ? readBooks.includes(workId) : false;
+             return isRead == (filterIsRead == "true" )
+           })
+        }
         if (cancelled) return;
 
-        setBooks(data.docs);
+        setBooks(books);
         setTotalPages(Math.max(1, Math.ceil(data.numFound / PAGE_SIZE)));
         setError(null);
       } catch (err) {
@@ -49,7 +63,7 @@ export const useBooks = ({
     return () => {
       cancelled = true;
     };
-  }, [query, page, filterType, filterLanguage]);
+  }, [query, page, filterType, filterLanguage, filterIsRead, readBooks]);
 
   return { books, loading, error, totalPages };
 };

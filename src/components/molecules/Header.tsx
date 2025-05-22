@@ -1,16 +1,21 @@
 import React, { useState } from 'react';
 import SearchBar from './SearchBar';
 import ContentWrapper from '../atoms/ContentWrapper';
-import type { LanguageCode } from '../../types/languages';
+import type { FilterType } from '../../types/filters';
+import type { FilterLanguageCodeType } from '../../types/filters';
 import Button from '../atoms/Button';
+import type { FilterIsReadType } from '../../types/filters';
+
 
 interface Props {
       initialValue?: string;
       searchValue: (value: string) => void;
-      filterType: 'q' | 'author' | 'title';
-      setFilterType: React.Dispatch<React.SetStateAction<'q' | 'author' | 'title'>>;
-      filterLanguage: LanguageCode;
-      setFilterLanguageType: React.Dispatch<React.SetStateAction<LanguageCode>>;
+      filterType: FilterType;
+      setFilterType: React.Dispatch<React.SetStateAction<FilterType>>;
+      filterLanguage: FilterLanguageCodeType;
+      setFilterLanguageType: React.Dispatch<React.SetStateAction<FilterLanguageCodeType>>;
+      filterIsRead: FilterIsReadType;
+      setFilterIsRead: React.Dispatch<React.SetStateAction<FilterIsReadType>>;
 }
 
 const Header: React.FC<Props> = ({
@@ -20,11 +25,15 @@ const Header: React.FC<Props> = ({
       setFilterType,
       filterLanguage,
       setFilterLanguageType,
+      filterIsRead,
+      setFilterIsRead,
 }) => {
       const [menuOpen, setMenuOpen] = useState(false);
+
       const headerClass =
             'sticky top-0 w-full p-4 bg-gradient-to-r from-blueLight to-peach border-2 border-b-blueLight z-10 backdrop-blur-lg';
-      const selectClass = 'mx-4 my-1 p-4 border rounded-full w-[calc(100%-2rem)] md:w-auto md:mx-0'
+      const selectClass = 'min-w-[150px] mx-4 my-1 p-4 border rounded-full w-[calc(100%-2rem)] md:w-auto md:mx-0'
+      const menuClass = 'absolute top-full right-0 mt-2 w-48 rounded shadow-lg py-2 transition-all duration-200 lg:static lg:mt-0 lg:w-auto lg:bg-opacity-100 lg:shadow-none lg:flex lg:gap-4 lg:py-0'
 
       return (
             <div className={headerClass}>
@@ -35,11 +44,11 @@ const Header: React.FC<Props> = ({
                                     text={menuOpen ? '✖️' : '➕'}
                                     style='light'
                                     onClick={() => setMenuOpen((o) => !o)}
-                                    className="md:hidden focus:outline-none"
+                                    className="lg:hidden focus:outline-none"
                                     aria-label="Abrir filtros"
                               />
                               <div
-                                    className={`${menuOpen ? 'block bg-white bg-opacity-90 backdrop-blur-sm border' : 'hidden items-center'} absolute top-full right-0 mt-2 w-48 rounded shadow-lg py-2 transition-all duration-200 md:static md:mt-0 md:w-auto md:bg-opacity-100 md:shadow-none md:flex md:gap-4 md:py-0`}
+                                    className={`${menuOpen ? 'block bg-white bg-opacity-90 backdrop-blur-sm border' : 'hidden items-center'} ${menuClass}`}
                               >
                                     <label htmlFor="filterType" className="font-semibold block md:inline-block">
                                           Buscar por:
@@ -55,7 +64,7 @@ const Header: React.FC<Props> = ({
                                           <option value="" disabled>
                                                 🔍 Filtrar por
                                           </option>
-                                          <option value="q">Ninguno</option>
+                                          <option value="q">Todos</option>
                                           <option value="author">Autor</option>
                                           <option value="title">Título</option>
                                     </select>
@@ -63,7 +72,7 @@ const Header: React.FC<Props> = ({
                                           id="filterLanguage"
                                           value={filterLanguage}
                                           onChange={(e) =>
-                                                setFilterLanguageType(e.target.value as LanguageCode)
+                                                setFilterLanguageType(e.target.value as FilterLanguageCodeType)
                                           }
                                           className={selectClass}
                                     >
@@ -73,6 +82,21 @@ const Header: React.FC<Props> = ({
                                           <option value="eng">🇺🇸 English</option>
                                           <option value="spa">🇪🇸 Español</option>
                                           <option value="fre">🇫🇷 Français</option>
+                                    </select>
+                                    <select
+                                          id="filterIsRead"
+                                          value={filterIsRead}
+                                          onChange={(e) =>
+                                                setFilterIsRead(e.target.value as FilterIsReadType)
+                                          }
+                                          className={selectClass}
+                                    >
+                                          <option value="" disabled>
+                                                Leidos
+                                          </option>
+                                          <option value="none">Ver todos</option>
+                                          <option value="true">Ver leidos</option>
+                                          <option value="false">Ver no leidos</option>
                                     </select>
                               </div>
                         </div>

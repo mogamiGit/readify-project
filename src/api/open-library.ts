@@ -1,13 +1,13 @@
 import type { GeneralResponseType } from "../types/open-library";
 import { OPEN_LIBRARY_SEARCH_URL } from "./endpoints";
-import type { LanguageCode } from '../types/languages';
+import type { FilterLanguageCodeType } from '../types/filters';
 import type { BookDetailsApi } from '../types/book';
 
 export async function getBooks(
       query: string, 
       page: number = 1,
       filterType: 'q' | 'author' | 'title' =  'q',
-      language?: LanguageCode,
+      language?: FilterLanguageCodeType,
       limit: number = 12,
 ): Promise<GeneralResponseType> {
       const url = new URL(OPEN_LIBRARY_SEARCH_URL)

@@ -5,20 +5,32 @@ import { getBookDetail } from '../../api/open-library';
 import type { BookDetailsApi } from '../../types/book';
 import { getCoverUrl, getPlaceholderUrl } from '../../utils/imageUtils';
 import Loading from '../organisms/Loading';
-import { useLocalStorage } from 'usehooks-ts'
 import Button from '../atoms/Button';
+import { useLocalStorage } from 'usehooks-ts'
+
+function getDescription(book: BookDetailsApi): string | undefined {
+      return typeof book.description === "string" ? book.description : book.description?.value
+}
 
 const DetailBook: React.FC = () => {
       const { workId } = useParams<{ workId: string }>();
+
       const navigate = useNavigate();
       const [book, setBook] = useState<BookDetailsApi | null>(null);
       const [loading, setLoading] = useState(true);
       const [error, setError] = useState<string | null>(null);
-      const [isRead, setIsRead] = useLocalStorage<boolean>(`book-${workId}-read`, false);
 
+      const [readBooks, setReadBooks] = useLocalStorage<string[]>('readBooks', []);
+      const isRead = workId ? readBooks.includes(workId) : false;
       const toggleReadStatus = () => {
-            setIsRead(!isRead);
-      };
+            if (!workId) return;
+
+            if (isRead) {
+                  setReadBooks(currentIds => currentIds.filter(id => id !== workId));
+            } else {
+                  setReadBooks(currentIds => [...currentIds, workId]);
+            }
+      }
 
       useEffect(() => {
             if (!workId) return;
@@ -66,8 +78,8 @@ const DetailBook: React.FC = () => {
       const coverUrl = getCoverUrl(book.covers?.[0]);
 
       return (
-            <div className='w-full h-auto md:h-[calc(100vh-80px)] flex items-center md:px-8'>
-                  <ContentWrapper className='relative bg-white/30 backdrop-blur-sm md:rounded-xl h-full md:h-auto'>
+            <div className='w-full h-auto flex items-center md:p-8'>
+                  <ContentWrapper className='relative bg-white/30 backdrop-blur-sm md:rounded-xl h-full md:h-auto py-4'>
                         <button
                               onClick={() => navigate(-1)}
                               className='absolute left-0 top-0 m-4 py-3 px-6 rounded-full bg-gray-300 border border-gray-400 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-300/50 disabled:hover:bg-gray-300 disabled:border-0 hover:scale-110 transition-transform'
@@ -97,7 +109,9 @@ const DetailBook: React.FC = () => {
                                     {book.description && (
                                           <div className='mt-4 w-full'>
                                                 <p className='text-sm font-semibold mb-2'>Descripción:</p>
-                                                <p className='text-sm text-balance'>{book.description}</p>
+                                                <p className='text-sm text-balance'>            
+                                                      {getDescription(book)}
+                                                </p>
                                           </div>
                                     )}
                                     <Button
