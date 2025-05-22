@@ -78,6 +78,7 @@ Además de la arquitectura de componentes atómicos, se centralizaron **constant
 Si hubiera tenido más tiempo para seguir desarrollando y optimizando el proyecto, me habría centrado en los siguientes aspectos:
 
 - **Optimización de Tiempos de Carga y Caching:** Implementaría estrategias para **optimizar los tiempos de carga** inicial de la aplicación y consideraría investigar formas de **guardar datos en caché** (por ejemplo, los resultados de las primeras consultas a la API). Esto es crucial para reducir los tiempos de espera y mejorar la experiencia de usuario, especialmente en la primera interacción.
+- **Gestión de la Paginación en Listados Filtrados:** Implementar la **paginación correcta para el apartado de filtrado por libros leídos**. Actualmente la API proporciona una paginación total que no se alinea correctamente con la paginación específica por el estado “leído” marcado en el filtro. Que funcione correctamente, implicaría replantear la lógica de cómo se manejan, ya que la arquitectura actual no contempla este escenario de forma directa.
 - **Mockeo de Datos:** Para facilitar el desarrollo y el testeo, me habría gustado **mockear los datos** de la API. Esto habría permitido un desarrollo más independiente de la disponibilidad y consistencia de la API externa, y habría agilizado la creación de tests unitarios (de haberlos realizado).
 - **Manejo Robusto de Errores y Tipificación Específica:** Mejoraría la **especificación y el manejo de errores** provenientes de la API para que sean más descriptivos y fáciles de testear. Además, sería valioso **especificar mejor los errores** para facilitar el proceso de *testing* y depuración.
 - **Gestión de Dependencias y Configuración:** Si bien se logró resolver, la integración de **Tailwind CSS con Vite** presentó desafíos iniciales debido a la falta de familiaridad con Vite (normalmente uso otros frameworks como Astro o Svelte).
@@ -88,7 +89,9 @@ Si hubiera tenido más tiempo para seguir desarrollando y optimizando el proyect
         - Para **portadas**: `https://covers.openlibrary.org/b/id/{id}-L.jpg`
         - Para **autores**: `https://openlibrary.org/a/olid/{olid}.jpg`
     - La API para obtener **detalles de libros concretos (`/works/OLxxxxW`) devuelve una página HTML por defecto**, y se necesita **añadir `.json` a la URL** para obtener los datos estructurados. A pesar de esto, la **carga de detalles en algunos libros sigue siendo inestable o produce errores**, lo que apunta a posibles problemas en la consistencia de los datos del propio `.json` o en la estabilidad de la API.
+    - He identificado una **inconsistencia en la prop `description` de los libros en la API,** que a veces se recibe como un `string` y otras como un `object`. Esta variabilidad provocó fallos intermitentes en la carga de la vista de detalle del libro y requeriría una lógica de tipado y manejo de datos más robusta para asegurar la estabilidad.
     - Me gustaría investigar cómo **normalizar o pre-procesar** estos datos para hacerlos más predecibles y fáciles de consumir.
+- **Mejoras en la Experiencia de Usuario y Diseño Visual:** En línea con las directrices del briefing que priorizaban la funcionalidad sobre el diseño visual, la interfaz actual es un reflejo de este enfoque. Sin embargo, con tiempo adicional, habría puesto un énfasis significativo en la **mejora de la experiencia de usuario y el diseño gráfico**. Me hubiera gustado implementar **filtros de búsqueda más intuitivos y un menú desplegable responsivo más estilizado para estos**. Además, la aplicación se beneficiaría enormemente de la adición de **animaciones sutiles y transiciones** para hacer la interacción más fluida y atractiva. Finalmente, para la vista de detalle de un libro, mi intención inicial era presentar la información en un **modal flotante** en lugar de una página de navegación completa.
 
 ## **5. Configuración y Ejecución Local**
 
@@ -117,7 +120,7 @@ Asegúrate de tener instalado Node.js (versión recomendada) y pnpm.
     ```bash
     pnpm install
     ```
-
+    
 ### **Ejecución:**
 
 1. Inicia el servidor de desarrollo:
